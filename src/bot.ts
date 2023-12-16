@@ -4,8 +4,8 @@ import {
   ChatSession,
   GenerateContentResult
 } from '@google-cloud/vertexai'
-import {info, setFailed, warning} from '@actions/core'
-import pRetry from 'p-retry'
+import {info, warning} from '@actions/core'
+// import pRetry from 'p-retry'
 import {VertexAIOptions, Options} from './options'
 
 // define type to save parentMessageId and conversationId
@@ -69,37 +69,35 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
 
     let response: GenerateContentResult | undefined
 
-    if (this.api != null) {
-      try {
-        response = await pRetry(() => this.api!.sendMessage(message), {
-          retries: this.options.vertexaiRetries
-        })
-      } catch (e: unknown) {
-        if (e instanceof Error) {
-          info(
-            `response: ${response}, failed to send message to vertexai: ${e}, backtrace: ${e.stack}`
-          )
-        }
+    try {
+      // response = await pRetry(
+      //   async () => {
+      //     return this.api!.sendMessage(message)
+      //   },
+      //   {retries: this.options.vertexaiRetries}
+      // )
+      response = await this.api!.sendMessage(message)
+    } catch (e: unknown) {
+      if (e instanceof Error) {
+        warning(
+          `failed to send message to vertexai: ${e}, backtrace: ${e.stack}`
+        )
+      } else {
+        warning(`failed to send message to vertexai: ${e}`)
       }
-      const end = Date.now()
-      info(`response: ${JSON.stringify(response)}`)
-      info(
-        `vertexai sendMessage (including retries) response time: ${
-          end - start
-        } ms`
-      )
-    } else {
-      setFailed('The Vertex AI API is not initialized')
     }
+    const end = Date.now()
+    info(`response: ${JSON.stringify(response, null, 2)}`)
+    info(
+      `vertexai sendMessage (including retries) response time: ${
+        end - start
+      } ms`
+    )
     let responseText = ''
     if (response != null) {
       responseText = response.response.candidates[0].content.parts[0].text || ''
     } else {
       warning('vertexai response is null')
-    }
-    // remove the prefix "with " in the response
-    if (responseText.startsWith('with ')) {
-      responseText = responseText.substring(5)
     }
     if (this.options.debug) {
       info(`vertexai responses: ${responseText}`)
