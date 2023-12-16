@@ -50,15 +50,13 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
   }
 
   chat = async (message: string): Promise<string> => {
-    let res: string = ''
     try {
-      res = await this.chat_(message)
-      return res
+      return await this.chat_(message)
     } catch (e: unknown) {
       if (e instanceof Error) {
         warning(`Failed to chat: ${e}, backtrace: ${e.stack}`)
       }
-      return res
+      return ''
     }
   }
 

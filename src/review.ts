@@ -337,9 +337,9 @@ ${
 
     // summarize content
     try {
-      const [summarizeResp] = await lightBot.chat(summarizePrompt)
+      const summarizeResp = await lightBot.chat(summarizePrompt)
 
-      if (summarizeResp === '') {
+      if (!summarizeResp) {
         info('summarize: nothing obtained from vertexai')
         summariesFailed.push(`${filename} (nothing obtained from vertexai)`)
         return null
@@ -402,10 +402,10 @@ ${filename}: ${summary}
 `
       }
       // ask model to summarize the summaries
-      const [summarizeResp] = await heavyBot.chat(
+      const summarizeResp = await heavyBot.chat(
         prompts.renderSummarizeChangesets(inputs)
       )
-      if (summarizeResp === '') {
+      if (!summarizeResp) {
         warning('summarize: nothing obtained from vertexai')
       } else {
         inputs.rawSummary = summarizeResp
@@ -414,19 +414,19 @@ ${filename}: ${summary}
   }
 
   // final summary
-  const [summarizeFinalResponse] = await heavyBot.chat(
+  const summarizeFinalResponse = await heavyBot.chat(
     prompts.renderSummarize(inputs)
   )
-  if (summarizeFinalResponse === '') {
+  if (!summarizeFinalResponse) {
     info('summarize: nothing obtained from vertexai')
   }
 
   if (options.disableReleaseNotes === false) {
     // final release notes
-    const [releaseNotesResponse] = await heavyBot.chat(
+    const releaseNotesResponse = await heavyBot.chat(
       prompts.renderSummarizeReleaseNotes(inputs)
     )
-    if (releaseNotesResponse === '') {
+    if (!releaseNotesResponse) {
       info('release notes: nothing obtained from vertexai')
     } else {
       let message = '### Summary by AI Reviewer\n\n'
@@ -443,7 +443,7 @@ ${filename}: ${summary}
   }
 
   // generate a short summary as well
-  const [summarizeShortResponse] = await heavyBot.chat(
+  const summarizeShortResponse = await heavyBot.chat(
     prompts.renderSummarizeShort(inputs)
   )
   inputs.shortSummary = summarizeShortResponse
@@ -606,10 +606,10 @@ ${commentChain}
       if (patchesPacked > 0) {
         // perform review
         try {
-          const [response] = await heavyBot.chat(
+          const response = await heavyBot.chat(
             prompts.renderReviewFileDiff(ins)
           )
-          if (response === '') {
+          if (!response) {
             info('review: nothing obtained from vertexai')
             reviewsFailed.push(`${filename} (no response)`)
             return

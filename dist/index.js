@@ -2313,16 +2313,14 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
         });
     }
     chat = async (message) => {
-        let res = '';
         try {
-            res = await this.chat_(message);
-            return res;
+            return await this.chat_(message);
         }
         catch (e) {
             if (e instanceof Error) {
                 (0,core.warning)(`Failed to chat: ${e}, backtrace: ${e.stack}`);
             }
-            return res;
+            return '';
         }
     };
     chat_ = async (message) => {
@@ -5584,7 +5582,7 @@ const handleReviewComment = async (heavyBot, options, prompts) => {
                     inputs.shortSummary = shortSummary;
                 }
             }
-            const [reply] = await heavyBot.chat(prompts.renderComment(inputs));
+            const reply = await heavyBot.chat(prompts.renderComment(inputs));
             await commenter.reviewCommentReply(pullNumber, topLevelComment, reply);
         }
     }
@@ -5988,8 +5986,8 @@ ${filterIgnoredFiles.length > 0
         }
         // summarize content
         try {
-            const [summarizeResp] = await lightBot.chat(summarizePrompt);
-            if (summarizeResp === '') {
+            const summarizeResp = await lightBot.chat(summarizePrompt);
+            if (!summarizeResp) {
                 (0,core.info)('summarize: nothing obtained from vertexai');
                 summariesFailed.push(`${filename} (nothing obtained from vertexai)`);
                 return null;
@@ -6042,8 +6040,8 @@ ${filename}: ${summary}
 `;
             }
             // ask model to summarize the summaries
-            const [summarizeResp] = await heavyBot.chat(prompts.renderSummarizeChangesets(inputs));
-            if (summarizeResp === '') {
+            const summarizeResp = await heavyBot.chat(prompts.renderSummarizeChangesets(inputs));
+            if (!summarizeResp) {
                 (0,core.warning)('summarize: nothing obtained from vertexai');
             }
             else {
@@ -6052,14 +6050,14 @@ ${filename}: ${summary}
         }
     }
     // final summary
-    const [summarizeFinalResponse] = await heavyBot.chat(prompts.renderSummarize(inputs));
-    if (summarizeFinalResponse === '') {
+    const summarizeFinalResponse = await heavyBot.chat(prompts.renderSummarize(inputs));
+    if (!summarizeFinalResponse) {
         (0,core.info)('summarize: nothing obtained from vertexai');
     }
     if (options.disableReleaseNotes === false) {
         // final release notes
-        const [releaseNotesResponse] = await heavyBot.chat(prompts.renderSummarizeReleaseNotes(inputs));
-        if (releaseNotesResponse === '') {
+        const releaseNotesResponse = await heavyBot.chat(prompts.renderSummarizeReleaseNotes(inputs));
+        if (!releaseNotesResponse) {
             (0,core.info)('release notes: nothing obtained from vertexai');
         }
         else {
@@ -6074,7 +6072,7 @@ ${filename}: ${summary}
         }
     }
     // generate a short summary as well
-    const [summarizeShortResponse] = await heavyBot.chat(prompts.renderSummarizeShort(inputs));
+    const summarizeShortResponse = await heavyBot.chat(prompts.renderSummarizeShort(inputs));
     inputs.shortSummary = summarizeShortResponse;
     let summarizeComment = `${summarizeFinalResponse}
 ${lib_commenter/* RAW_SUMMARY_START_TAG */.oi}
@@ -6189,8 +6187,8 @@ ${commentChain}
             if (patchesPacked > 0) {
                 // perform review
                 try {
-                    const [response] = await heavyBot.chat(prompts.renderReviewFileDiff(ins));
-                    if (response === '') {
+                    const response = await heavyBot.chat(prompts.renderReviewFileDiff(ins));
+                    if (!response) {
                         (0,core.info)('review: nothing obtained from vertexai');
                         reviewsFailed.push(`${filename} (no response)`);
                         return;
