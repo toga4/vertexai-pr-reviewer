@@ -2227,6 +2227,9 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
         if (!message) {
             return '';
         }
+        (0,core.info)(`----- MESSAGE START -----
+${message}
+----- MESSAGE END -----`);
         let response;
         try {
             // response = await pRetry(

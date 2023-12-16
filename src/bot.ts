@@ -67,6 +67,9 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
       return ''
     }
 
+    info(`----- MESSAGE START -----
+${message}
+----- MESSAGE END -----`)
     let response: GenerateContentResult | undefined
 
     try {
