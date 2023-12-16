@@ -48998,7 +48998,7 @@ class GenerativeModel {
                 throw new Error('did not get a valid response.');
             }
             if (!response.ok) {
-                throw new Error(`${response.status} ${response.statusText}`);
+                throw new Error(`${response.status} ${response.statusText} ${await response.text()}`);
             }
         }
         catch (e) {
@@ -50863,7 +50863,7 @@ module.exports = JSON.parse('{"name":"google-auth-library","version":"9.4.1","au
 /******/ 			if(!installedChunks[chunkId]) {
 /******/ 				if(true) { // all chunks have JS
 /******/ 					installChunk(require("./" + __nccwpck_require__.u(chunkId)));
-/******/ 				} else installedChunks[chunkId] = 1;
+/******/ 				} else { }
 /******/ 			}
 /******/ 		};
 /******/ 		
