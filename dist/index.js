@@ -49635,6 +49635,9 @@ function processStream(response) {
     if (!response.body) {
         throw new Error('Error processing stream because response.body not found');
     }
+    if (typeof response.body.getReader !== 'function') {
+        throw new Error(`status: ${response.status}, statusText: ${response.statusText}, url: ${response.url}, headers: ${JSON.stringify(response.headers)}, body: ${response.body}`)
+    }
     const reader = response.body.getReader();
     const responseStream = readFromReader(reader);
     const [stream1, stream2] = responseStream.tee();
@@ -51244,7 +51247,7 @@ module.exports = JSON.parse('{"name":"google-auth-library","version":"9.4.1","au
 /******/ 			if(!installedChunks[chunkId]) {
 /******/ 				if(true) { // all chunks have JS
 /******/ 					installChunk(require("./" + __nccwpck_require__.u(chunkId)));
-/******/ 				} else installedChunks[chunkId] = 1;
+/******/ 				} else { }
 /******/ 			}
 /******/ 		};
 /******/ 		
