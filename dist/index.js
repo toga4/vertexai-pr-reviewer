@@ -3067,7 +3067,12 @@ async function run() {
 }
 process
     .on('unhandledRejection', (reason, p) => {
-    (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.warning)(`Unhandled Rejection at Promise: ${reason}, promise is ${p}`);
+    if (reason instanceof Error) {
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.warning)(`Unhandled Rejection at Promise: ${reason}, backtrace: ${reason.stack}`);
+    }
+    else {
+        (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.warning)(`Unhandled Rejection at Promise: ${reason}, promise is ${p}`);
+    }
 })
     .on('uncaughtException', (e) => {
     (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.warning)(`Uncaught Exception thrown: ${e}, backtrace: ${e.stack}`);

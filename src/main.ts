@@ -97,7 +97,13 @@ async function run(): Promise<void> {
 
 process
   .on('unhandledRejection', (reason, p) => {
-    warning(`Unhandled Rejection at Promise: ${reason}, promise is ${p}`)
+    if (reason instanceof Error) {
+      warning(
+        `Unhandled Rejection at Promise: ${reason}, backtrace: ${reason.stack}`
+      )
+    } else {
+      warning(`Unhandled Rejection at Promise: ${reason}, promise is ${p}`)
+    }
   })
   .on('uncaughtException', (e: any) => {
     warning(`Uncaught Exception thrown: ${e}, backtrace: ${e.stack}`)
