@@ -2297,9 +2297,9 @@ class Bot {
                 max_output_tokens: vertexaiOptions.tokenLimits.responseTokens,
                 temperature: options.vertexaiModelTemperature,
                 // eslint-disable-next-line camelcase
-                top_p: options.vertexaiTopP,
+                top_p: options.vertexaiModelTopP,
                 // eslint-disable-next-line camelcase
-                top_k: options.vertexaiTopK
+                top_k: options.vertexaiModelTopK
             }
         });
         const systemMessage = `${options.systemMessage}
@@ -2398,7 +2398,7 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
 // eslint-disable-next-line camelcase
 const context = _actions_github__WEBPACK_IMPORTED_MODULE_1__.context;
 const repo = context.repo;
-const COMMENT_GREETING = `{getInput('bot_icon')} AI Reviewer`;
+const COMMENT_GREETING = `${(0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('bot_icon')} AI Reviewer`;
 const COMMENT_TAG = '<!-- This is an auto-generated comment by Vertex AI Reviewer -->';
 const COMMENT_REPLY_TAG = '<!-- This is an auto-generated reply by Vertex AI Reviewer -->';
 const SUMMARIZE_TAG = '<!-- This is an auto-generated comment: summarize by Vertex AI Reviewer -->';
@@ -3123,7 +3123,7 @@ __nccwpck_require__.r(__webpack_exports__);
 
 
 async function run() {
-    const options = new _options__WEBPACK_IMPORTED_MODULE_2__/* .Options */ .Ei((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('debug'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('disable_review'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('disable_release_notes'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('max_files'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('review_simple_changes'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('review_comment_lgtm'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getMultilineInput)('path_filters'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('system_message'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('reply_for_system_message'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_project_id'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_location'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_light_model'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_heavy_model'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_model_temperature'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_top_k'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_top_p'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_retries'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_concurrency_limit'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('github_concurrency_limit'), 
+    const options = new _options__WEBPACK_IMPORTED_MODULE_2__/* .Options */ .Ei((0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('debug'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('disable_review'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('disable_release_notes'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('max_files'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('review_simple_changes'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getBooleanInput)('review_comment_lgtm'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getMultilineInput)('path_filters'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('system_message'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('reply_for_system_message'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_project_id'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_location'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_light_model'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_heavy_model'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_model_temperature'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_model_top_k'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_model_top_p'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_retries'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('vertexai_concurrency_limit'), (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('github_concurrency_limit'), 
     // getInput('vertexai_base_url'),
     (0,_actions_core__WEBPACK_IMPORTED_MODULE_0__.getInput)('language'));
     // print options
@@ -5047,8 +5047,8 @@ class Options {
     vertexaiLightModel;
     vertexaiHeavyModel;
     vertexaiModelTemperature;
-    vertexaiTopK;
-    vertexaiTopP;
+    vertexaiModelTopK;
+    vertexaiModelTopP;
     vertexaiRetries;
     vertexaiConcurrencyLimit;
     githubConcurrencyLimit;
@@ -5056,7 +5056,7 @@ class Options {
     heavyTokenLimits;
     // apiBaseUrl: string
     language;
-    constructor(debug, disableReview, disableReleaseNotes, maxFiles = '0', reviewSimpleChanges = false, reviewCommentLGTM = false, pathFilters = null, systemMessage = '', replyForSystemMessage = '', vertexaiProjectID, vertexaiLocation = 'us-central1', vertexaiLightModel = 'gemini-pro', vertexaiHeavyModel = 'gemini-pro', vertexaiModelTemperature = '0.9', vertexaiTopK = '32', vertexaiTopP = '1.0', vertexaiRetries = '3', vertexaiConcurrencyLimit = '6', githubConcurrencyLimit = '6', 
+    constructor(debug, disableReview, disableReleaseNotes, maxFiles = '0', reviewSimpleChanges = false, reviewCommentLGTM = false, pathFilters = null, systemMessage = '', replyForSystemMessage = '', vertexaiProjectID, vertexaiLocation = 'us-central1', vertexaiLightModel = 'gemini-pro', vertexaiHeavyModel = 'gemini-pro', vertexaiModelTemperature = '0.9', vertexaiModelTopK = '32', vertexaiModelTopP = '1.0', vertexaiRetries = '3', vertexaiConcurrencyLimit = '6', githubConcurrencyLimit = '6', 
     // apiBaseUrl = 'https://api.vertexai.com/v1',
     language = 'en-US') {
         this.debug = debug;
@@ -5073,8 +5073,8 @@ class Options {
         this.vertexaiLightModel = vertexaiLightModel;
         this.vertexaiHeavyModel = vertexaiHeavyModel;
         this.vertexaiModelTemperature = parseFloat(vertexaiModelTemperature);
-        this.vertexaiTopK = parseInt(vertexaiTopK);
-        this.vertexaiTopP = parseFloat(vertexaiTopP);
+        this.vertexaiModelTopK = parseInt(vertexaiModelTopK);
+        this.vertexaiModelTopP = parseFloat(vertexaiModelTopP);
         this.vertexaiRetries = parseInt(vertexaiRetries);
         this.vertexaiConcurrencyLimit = parseInt(vertexaiConcurrencyLimit);
         this.githubConcurrencyLimit = parseInt(githubConcurrencyLimit);
@@ -5099,8 +5099,8 @@ class Options {
         (0,core.info)(`vertexai_light_model: ${this.vertexaiLightModel}`);
         (0,core.info)(`vertexai_heavy_model: ${this.vertexaiHeavyModel}`);
         (0,core.info)(`vertexai_model_temperature: ${this.vertexaiModelTemperature}`);
-        (0,core.info)(`vertexai_top_k: ${this.vertexaiTopK}`);
-        (0,core.info)(`vertexai_top_p: ${this.vertexaiTopP}`);
+        (0,core.info)(`vertexai_model_top_k: ${this.vertexaiModelTopK}`);
+        (0,core.info)(`vertexai_model_top_p: ${this.vertexaiModelTopP}`);
         (0,core.info)(`vertexai_retries: ${this.vertexaiRetries}`);
         (0,core.info)(`vertexai_concurrency_limit: ${this.vertexaiConcurrencyLimit}`);
         (0,core.info)(`github_concurrency_limit: ${this.githubConcurrencyLimit}`);
