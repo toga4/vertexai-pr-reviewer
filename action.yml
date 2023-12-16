@@ -184,7 +184,7 @@ inputs:
   vertexai_concurrency_limit:
     required: false
     description: 'How many concurrent API calls to make to Vertex AI servers?'
-    default: '6'
+    default: '1'
   github_concurrency_limit:
     required: false
     description: 'How many concurrent API calls to make to GitHub?'
@@ -255,5 +255,5 @@ inputs:
     description: 'The icon for the bot'
     default: 🤖
 runs:
-  using: 'node16'
+  using: 'node20'
   main: 'dist/index.js'
