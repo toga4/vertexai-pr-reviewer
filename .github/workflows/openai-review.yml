@@ -31,11 +31,11 @@ jobs:
           credentials_json: ${{ secrets.GOOGLE_CREDENTIALS }}
           project_id: sandbox-toga4-vertexai
 
-      # - uses: ./
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #   with:
-      #     debug: true
-      #     language: ja-JP
-      #     vertexai_project_id: sandbox-toga4-vertexai
-      #     vertexai_location: asia-northeast1
+      - uses: ./
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          debug: true
+          language: ja-JP
+          vertexai_project_id: sandbox-toga4-vertexai
+          vertexai_location: asia-northeast1
