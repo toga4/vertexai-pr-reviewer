@@ -159,11 +159,11 @@ inputs:
     required: false
     description:
       'Model to use for simple tasks like summarizing diff on a file.'
-    default: 'gemini-pro'
+    default: 'codechat-bison'
   vertexai_heavy_model:
     required: false
     description: 'Model to use for complex tasks such as code reviews.'
-    default: 'gemini-pro'
+    default: 'codechat-bison-32k'
   vertexai_model_temperature:
     required: false
     description: 'Temperature for Vertex AI model'

@@ -1,8 +1,10 @@
 import './fetch-polyfill'
 import {VertexAI, ChatSession} from '@google-cloud/vertexai'
+import {PredictionServiceClient, helpers} from '@google-cloud/aiplatform'
 import {info, warning} from '@actions/core'
 // import pRetry from 'p-retry'
 import {VertexAIOptions, Options} from './options'
+import {TokenLimits} from './limits'
 
 // define type to save parentMessageId and conversationId
 export interface Ids {
@@ -16,7 +18,11 @@ export class Bot {
 
   constructor(options: Options, vertexaiOptions: VertexAIOptions) {
     this.options = options
-    this.api = new VertexAIAPI(options, vertexaiOptions)
+    if (vertexaiOptions.model.startsWith('gemini')) {
+      this.api = new VertexAIAPI(options, vertexaiOptions)
+    } else {
+      this.api = new AIPlatformAPI(options, vertexaiOptions)
+    }
   }
 
   chat = async (message: string): Promise<string> => {
@@ -38,7 +44,6 @@ export class Bot {
     if (!message) {
       return ''
     }
-    info('----- MESSAGE START -----\n${message}\n----- MESSAGE END -----')
     // response = await pRetry(
     //   async () => {
     //     return this.api!.sendMessage(message)
@@ -55,16 +60,19 @@ export class Bot {
   }
 }
 
-declare interface ChatAPI {
+interface ChatAPI {
+  // eslint-disable-next-line no-unused-vars
   sendMessage(message: string): Promise<string>
 }
 
 class VertexAIAPI implements ChatAPI {
   private readonly options: Options
+  private readonly model: string
   private readonly chatSession: ChatSession
 
   constructor(options: Options, vertexaiOptions: VertexAIOptions) {
     this.options = options
+    this.model = vertexaiOptions.model
     const systemMessage = `${options.systemMessage}
 IMPORTANT: Entire response must be in the language with ISO code: ${options.language}
 `
@@ -97,10 +105,78 @@ IMPORTANT: Entire response must be in the language with ISO code: ${options.lang
   }
 
   async sendMessage(message: string): Promise<string> {
+    if (this.options.debug) {
+      info(`request to model (${this.model}):\n${message}`)
+    }
     const result = await this.chatSession.sendMessage(message)
     if (this.options.debug) {
-      info(`response: ${JSON.stringify(result, null, 2)}`)
+      const dump = JSON.stringify(result, null, 2)
+      info(`response from model (${this.model}): ${dump}`)
     }
     return result.response.candidates[0].content.parts[0].text || ''
+  }
+}
+
+class AIPlatformAPI implements ChatAPI {
+  private readonly options: Options
+  private readonly model: string
+  private readonly tokenLimits: TokenLimits
+  private readonly client: PredictionServiceClient
+
+  private readonly endpoint: string
+  private readonly context: string
+  private messageHistory: {author: string; content: string}[] = []
+
+  constructor(options: Options, vertexaiOptions: VertexAIOptions) {
+    this.options = options
+    this.model = vertexaiOptions.model
+    this.tokenLimits = vertexaiOptions.tokenLimits
+    this.client = new PredictionServiceClient({
+      apiEndpoint: `${options.vertexaiLocation}-aiplatform.googleapis.com`
+    })
+
+    this.endpoint = `projects/${options.vertexaiProjectID}/locations/${options.vertexaiLocation}/publishers/google/models/${vertexaiOptions.model}`
+    this.context = `${options.systemMessage}
+IMPORTANT: Entire response must be in the language with ISO code: ${options.language}
+`
+  }
+
+  async sendMessage(message: string): Promise<string> {
+    this.messageHistory.push({author: 'user', content: message})
+    const parameters = {
+      temperature: this.options.vertexaiModelTemperature,
+      maxOutputTokens: this.tokenLimits.responseTokens,
+      topP: this.options.vertexaiModelTopP,
+      topK: this.options.vertexaiModelTopK
+    }
+    const prompt = {
+      context: this.context,
+      messages: this.messageHistory
+    }
+    const request = {
+      endpoint: this.endpoint,
+      parameters: helpers.toValue(parameters),
+      instances: [helpers.toValue(prompt)!]
+    }
+
+    if (this.options.debug) {
+      const dump = JSON.stringify(request, null, 2)
+      info(`request to model (${this.model}): ${dump}}`)
+    }
+
+    const [response] = await this.client.predict(request)
+
+    if (this.options.debug) {
+      const dump = JSON.stringify(response, null, 2)
+      info(`response from model (${this.model}): ${dump}`)
+    }
+
+    const responseText =
+      response?.predictions?.[0].structValue?.fields?.candidates?.listValue
+        ?.values?.[0].structValue?.fields?.content?.stringValue || ''
+
+    this.messageHistory.push({author: 'model', content: responseText})
+
+    return responseText
   }
 }

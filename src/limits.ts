@@ -7,6 +7,12 @@ export class TokenLimits {
     if (model === 'gemini-pro') {
       this.maxTokens = 32000
       this.responseTokens = 8192
+    } else if (model === 'codechat-bison') {
+      this.maxTokens = 6144 + 1024
+      this.responseTokens = 1024
+    } else if (model === 'codechat-bison-32k') {
+      this.maxTokens = 32000
+      this.responseTokens = 8192
     } else {
       this.maxTokens = 4000
       this.responseTokens = 1000
