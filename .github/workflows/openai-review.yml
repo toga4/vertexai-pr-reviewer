@@ -39,3 +39,5 @@ jobs:
           language: ja-JP
           vertexai_project_id: sandbox-toga4-vertexai
           vertexai_location: asia-northeast1
+          vertexai_light_model: gemini-pro
+          vertexai_heavy_model: gemini-pro
